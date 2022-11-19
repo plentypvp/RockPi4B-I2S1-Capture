@@ -1,0 +1,49 @@
+//My overlay
+/dts-v1/;
+/plugin/;
+
+/ {
+	compatible = "rockchip,rockpi","rockchip,rk3399";
+
+	fragment@0 {
+		target-path = "/sound-ext-card";
+		__overlay__ {
+			status = "okay";
+			compatible = "simple-audio-card";
+			simple-audio-card,name = "i2smycard";
+			simple-audio-card,format = "i2s";
+			
+			simple-audio-card,mclk-fs = <256>;
+
+			sac_cpu: simple-audio-card,cpu {
+				sound-dai = <&i2s1>;
+				dai-tdm-slot-num = <2>;
+				dai-tdm-slot-width = <32>;
+			};
+
+			sac_codec: simple-audio-card,codec {
+				sound-dai = <&codec_in>;
+			};
+		};
+	};
+	
+	fragment@1 {
+		target = <&i2s1>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@2 {
+		target-path = "/";
+		__overlay__ {
+			codec_in: spdif-receiver {
+				#address-cells = <0>;
+				#size-cells = <0>;
+				#sound-dai-cells = <0>;
+				compatible = "linux,spdif-dir";
+				status = "okay";
+			};
+		};
+	};
+};
